@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/custom.css">
+    <title>Mulah Loyalty System</title>
+</head>
+
+<body>
+    <div class="container form-box">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h2 class="main-title theme-color">MULAH</h2>
+            </div>
+            <div class="col-12">
+                <h2 class="mb-4 sub-title2">
+                    Registration
+                </h2>
+                <i>
+                    <h5>
+                        Please fill up your details.
+                    </h5>
+                </i>
+            </div>
+            <div class="col-12 my-5">
+                <form class="form-horizontal">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" placeholder="Enter Name" maxlength="40">
+                        <div class="error_name" style="display:none">
+                            <i><span class="text-danger">*Please insert a name</span></i>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Birthday</label>
+                        <div class="row" id="birth_row">
+                            <div class="col-3">
+                                <input type="text" class="form-control" id="b_day" onkeypress="return onlyNumberKey(event)" placeholder="DD" maxlength="2">
+                            </div>
+                            <div class="col-3">
+                                <input type="text" class="form-control" id="b_month" onkeypress="return onlyNumberKey(event)" placeholder="MM" maxlength="2">
+                            </div>
+                            <div class="col-6">
+                                <input type="text" class="form-control" id="b_year" onkeypress="return onlyNumberKey(event)" placeholder="YYYY" maxlength="4">
+                            </div>
+                        </div>
+                        <div class="error_name" style="display:none">
+                            <i><span class="text-danger">*Please insert your birthday</span></i>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="text" class="form-control" id="email" placeholder="Email Address">
+                        <div class="error_name" style="display:none">
+                            <i><span class="text-danger">*Please insert a valid email address</span></i>
+                        </div>
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="no_email" onclick="return no_email_check()">
+                        <label class="form-check-label" for="no_email">No Email Address</label>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="d-grid">
+                <button class="btn btn-primary btn-theme rounded-pill d-block" onclick="return toThirdPage()">Continue</button>
+            </div>
+        </div>
+        <hr class="my-5">
+        <div class="text-center">
+            Powered By <a class="powered-text" href="https://www.mulahrewards.com/">MulahRewards.com</a>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <script>
+        function onlyNumberKey(evt) {
+            // Only ASCII character in that range allowed
+            var ASCIICode = (evt.which) ? evt.which : evt.keyCode
+            if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57))
+                return false;
+            return true;
+        }
+
+        function no_email_check() {
+            var no_email = document.getElementById("no_email");
+            if (no_email.checked) {
+                document.getElementById("email").readOnly = true;
+            } else {
+                document.getElementById("email").readOnly = false;
+            }
+        }
+
+        function toThirdPage() {
+            // Remove all error message
+            var er_el = document.querySelectorAll(".error_name");
+            er_el.forEach(er_el => {
+                er_el.style.display = 'none';
+            });
+
+            // Get no mail checkbox
+            var no_email_checked = document.getElementById("no_email");
+
+            // Get the value of the input field
+            let name = document.getElementById("name").value;
+            let b_day = document.getElementById("b_day").value;
+            let b_month = document.getElementById("b_month").value;
+            let b_year = document.getElementById("b_year").value;
+            let email = document.getElementById("email").value;
+            let no_email = document.getElementById("no_email").value;
+
+            var c_name = true;
+            var c_birthday = true;
+            var c_email = true;
+
+            if (name.length == 0) {
+                document.getElementById("name").nextElementSibling.style.display = 'block';
+                c_name = false;
+            }
+
+            if (b_day.length == 0 || b_month.length == 0 || b_year.length == 0) {
+                document.getElementById("birth_row").nextElementSibling.style.display = 'block';
+                c_birthday = false;
+            }
+
+            if (email.length == 0 && no_email_checked.checked == false) {
+                document.getElementById("email").nextElementSibling.style.display = 'block';
+                c_email = false;
+            }
+
+            mail_validate = validateEmail(document.getElementById("email"));
+            if (no_email_checked.checked == false && !mail_validate) {
+                document.getElementById("email").nextElementSibling.style.display = 'block';
+                c_email = false;
+            }
+
+            if (c_name && c_birthday && c_email) {
+                // Set Data
+                localStorage.setItem("name", name);
+                localStorage.setItem("b_day", b_day);
+                localStorage.setItem("b_month", b_month);
+                localStorage.setItem("b_year", b_year);
+                localStorage.setItem("email", email);
+
+                window.location.href = "page_3.html";
+            }
+        }
+
+        // Validate email format
+        function validateEmail(inputText) {
+            var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+            if (inputText.value.match(mailformat)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    </script>
+</body>
+
+</html>
